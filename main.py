@@ -5,8 +5,8 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 import streamlit as st
-import plotly.express as px
-import plotly.graph_objects as go
+#import plotly.express as px
+#import plotly.graph_objects as go
 
 df = pd.read_csv('pompeia.csv', sep = ';', usecols= ['Código','Nascimento','Sexo','Consultor','Professor','Último Status','Modalidade'])
 new_col_names = {'Código':'Código de cliente'}
