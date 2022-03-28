@@ -13,8 +13,7 @@ def _carga():
     con = mysql.connector.connect(host='academiadb1.mysql.database.azure.com',
                               database='academia',
                               user='ralmeida@academiadb1',
-                              password='sQL#2022',
-                              ssl_disabled= True)
+                              password='sQL#2022')
     cursor = con.cursor()
     df = pd.read_sql("SELECT * FROM DW_1\
                 WHERE NOT EXISTS(SELECT * FROM DW_2 WHERE DW_1.`Código de cliente` = DW_2.`Código de cliente`)\
@@ -32,8 +31,7 @@ def _reset():
     con = mysql.connector.connect(host='academiadb1.mysql.database.azure.com',
                               database='academia',
                               user='ralmeida@academiadb1',
-                              password='sQL#2022',
-                              ssl_disabled= True)
+                              password='sQL#2022')
     cursor = con.cursor()
     df = pd.read_sql("SELECT * FROM DW_1 limit 100", con);
     cursor.close()
@@ -48,8 +46,7 @@ def _reset():
 con = mysql.connector.connect(host='academiadb1.mysql.database.azure.com',
                               database='academia',
                               user='ralmeida@academiadb1',
-                              password='sQL#2022',
-                              ssl_disabled= True)
+                              password='sQL#2022')
 cursor = con.cursor()
 
 df = pd.read_sql("SELECT * FROM dw_2", con);
