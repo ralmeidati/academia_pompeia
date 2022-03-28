@@ -5,40 +5,72 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 import streamlit as st
-#import plotly.express as px
-#import plotly.graph_objects as go
+import mysql.connector
+from sqlalchemy import create_engine
+import pymysql
 
-df = pd.read_csv('pompeia.csv', sep = ';', usecols= ['Código','Nascimento','Sexo','Consultor','Professor','Último Status','Modalidade'])
-new_col_names = {'Código':'Código de cliente'}
-df = df.rename(new_col_names, axis = 'columns')
+def _carga():
+    con = mysql.connector.connect(host='academiadb1.mysql.database.azure.com',
+                              database='academia',
+                              user='ralmeida@academiadb1',
+                              password='sQL#2022',
+                              ssl_disabled= True)
+    cursor = con.cursor()
+    df = pd.read_sql("SELECT * FROM DW_1\
+                WHERE NOT EXISTS(SELECT * FROM DW_2 WHERE DW_1.`Código de cliente` = DW_2.`Código de cliente`)\
+                limit 100", con);
+    cursor.close()
+    con.close()
+    df.drop('index', axis=1, inplace = True)
+    
+    sqlEngine = create_engine('mysql+pymysql://ralmeida@academiadb1:sQL#2022@academiadb1.mysql.database.azure.com:3306/academia', pool_recycle=3600)
+    dbConnection    = sqlEngine.connect()
+    df.to_sql('dw_2', dbConnection, index=False,if_exists='append');
+    dbConnection.close()
 
-#Dividir a coluna do ultimo status em duas novas colunas no dataframe original, exluindo a coluna original
-df[['data última presença', 'hora última presença']] = df["Último Status"].str.split(' ', expand = True)
-df.drop(columns =["Último Status"], inplace = True) 
+def _reset():
+    con = mysql.connector.connect(host='academiadb1.mysql.database.azure.com',
+                              database='academia',
+                              user='ralmeida@academiadb1',
+                              password='sQL#2022',
+                              ssl_disabled= True)
+    cursor = con.cursor()
+    df = pd.read_sql("SELECT * FROM DW_1 limit 100", con);
+    cursor.close()
+    con.close()
+    df.drop('index', axis=1, inplace = True)
+    sqlEngine = create_engine('mysql+pymysql://ralmeida@academiadb1:sQL#2022@academiadb1.mysql.database.azure.com:3306/academia', pool_recycle=3600)
+    dbConnection = sqlEngine.connect()
+    df.to_sql('dw_2', dbConnection, index=False, if_exists='replace');
+    dbConnection.close()
 
-# Convertendo strings para date e time
-df['Nascimento'] = pd.to_datetime(df['Nascimento'], format="%d/%m/%Y")
-df['data última presença'] = pd.to_datetime(df['data última presença'], format="%d/%m/%Y")
-df['hora última presença'] = pd.to_datetime(df['hora última presença'], format="%H:%M")
 
-#O cliente sedentário é o primeiro registro na ordenação por data do último status
+con = mysql.connector.connect(host='academiadb1.mysql.database.azure.com',
+                              database='academia',
+                              user='ralmeida@academiadb1',
+                              password='sQL#2022',
+                              ssl_disabled= True)
+cursor = con.cursor()
+
+df = pd.read_sql("SELECT * FROM dw_2", con);
+
+cursor.close()
+con.close()
+#df.drop('index', axis=1, inplace = True)
+
+
 cliente_sedentario = df[['Código de cliente','data última presença']].sort_values(by=['data última presença'])
 cliente_sedentario = cliente_sedentario.head(1)
 
 consultores = df[['Consultor']].groupby('Consultor').agg(Total=('Consultor','count')).sort_values(by='Total', ascending=False)
 consultor = consultores.head(1)
 
-correcao = {'-':'SEM PROFESSOR'}
-df['Professor'].replace(correcao, inplace= True)
 professores = df[['Professor']].groupby('Professor').agg(Total=('Professor','count')).sort_values(by='Total', ascending=False)
 professores.head(8)
 professor = professores[1:2]
 
-correcao = {'FUNCIONAL + MUSCULAÇÃO, NATAÇÃO':'FUNCIONAL + MUSCULAÇÃO + NATAÇÃO'}
-df['Modalidade'].replace(correcao, inplace= True)
 temp = pd.DataFrame()
 temp[['modalidade1','modalidade2','modalidade3']] = df['Modalidade'].str.split('+', expand = True)
-
 correcao = {'MUSCULAÇÃO ': 'MUSCULAÇÃO',' MUSCULAÇÃO':'MUSCULAÇÃO',' MUSCULAÇÃO ':'MUSCULAÇÃO','FUNCIONAL ':'FUNCIONAL',' FUNCIONAL':'FUNCIONAL','NATAÇÃO ':'NATAÇÃO',' NATAÇÃO':'NATAÇÃO','-':'PLANO COMPLETO'}
 temp.replace(correcao, inplace= True)
 
@@ -47,6 +79,8 @@ modalidades['Total'] = pd.concat([temp['modalidade1'],temp['modalidade2'],temp['
 modalidades = pd.DataFrame(modalidades['Total'].value_counts())
 
 st.title("Academia Pompeia")
+
+st.sidebar.button('Carregar mais dados', help='Clique para realizar a simulação de entrada de dados', on_click=_carga)
 
 sidebar_selection = st.sidebar.radio(
     "Selecione uma opção:",
@@ -70,3 +104,4 @@ if sidebar_selection == 'Qual é a modalidade, mais consumida?':
 if sidebar_selection == 'Encontrar inconsistencias no cadastro das modalidades?':
   st.write("Em análise...")
 
+st.sidebar.button('RESET', help='Clique para voltar ao estado inicial', on_click=_reset)
