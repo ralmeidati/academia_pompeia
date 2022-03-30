@@ -12,7 +12,7 @@ A academia ainda não possui um sistema de BI, mas nos disponibilizou um export 
 
 Esse é um snapshot do banco original:
 
-![Banco original](/home/ralmeida/jupyter/academia_pompeia/img/banco_original.png  "Banco original")
+![Banco original](/img/banco_original.png  "Banco original")
 
 Então foi criada uma tarefa (Dag) no Airflow para replicar as atualizações banco de produção no nosso DataWarehouse com os dados já tratados prontos para análise.
 
