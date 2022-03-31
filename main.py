@@ -22,7 +22,7 @@ def _carga():
     con.close()
     df.drop('index', axis=1, inplace = True)
     
-    sqlEngine = create_engine('mysql+pymysql://ralmeida@academiadb1:st.secrets["db_password"]@academiadb1.mysql.database.azure.com:3306/academia', pool_recycle=3600)
+    sqlEngine = create_engine('mysql+pymysql://ralmeida@academiadb1:sQL#2022@academiadb1.mysql.database.azure.com:3306/academia', pool_recycle=3600) pool_recycle=3600)
     dbConnection    = sqlEngine.connect()
     df.to_sql('dw_2', dbConnection, index=False,if_exists='append');
     dbConnection.close()
@@ -37,7 +37,7 @@ def _reset():
     cursor.close()
     con.close()
     df.drop('index', axis=1, inplace = True)
-    sqlEngine = create_engine('mysql+pymysql://ralmeida@academiadb1:st.secrets["db_password"]@academiadb1.mysql.database.azure.com:3306/academia', pool_recycle=3600)
+    sqlEngine = create_engine('mysql+pymysql://ralmeida@academiadb1:sQL#2022@academiadb1.mysql.database.azure.com:3306/academia', pool_recycle=3600) pool_recycle=3600)
     dbConnection = sqlEngine.connect()
     df.to_sql('dw_2', dbConnection, index=False, if_exists='replace');
     dbConnection.close()
@@ -46,7 +46,7 @@ def _reset():
 con = mysql.connector.connect(host='academiadb1.mysql.database.azure.com',
                               database='academia',
                               user=st.secrets["db_username"],
-                              password=st.secrets["db_password"],)
+                              password=st.secrets["db_password"])
 cursor = con.cursor()
 
 df = pd.read_sql("SELECT * FROM dw_2", con);
