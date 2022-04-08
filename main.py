@@ -116,6 +116,8 @@ if sidebar_selection == 'Professor que tem mais alunos?':
   
 if sidebar_selection == 'Qual é a modalidade, mais consumida?':
   st.markdown('## Qual é a modalidade, mais consumida?')
+  st.write('Modalidades dentro do período')  
+  data_inicial, data_final = st.select_slider('Selecione o período:', options=periodo, value=(periodo.min(), periodo.max()))
   modalidades[0:2]
   st.bar_chart(modalidades,width=0, height=400)
   
