@@ -8,8 +8,8 @@ import streamlit as st
 import mysql.connector
 from sqlalchemy import create_engine
 import pymysql
-sqlhost = sql10.freesqldatabase.com
-Database_name = sql10734914
+Sqlhost = "sql10.freesqldatabase.com"
+Database_name = "sql10734914"
 
 
 def _carga():
