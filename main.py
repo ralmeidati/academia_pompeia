@@ -13,7 +13,7 @@ Database_name = "sql10734914"
 
 
 def _carga():
-    con = mysql.connector.connect(host=sqlhost,
+    con = mysql.connector.connect(host=Sqlhost,
                               database=Database_name,
                               user=st.secrets["db_username"],
                               password=st.secrets["db_password"])
@@ -32,7 +32,7 @@ def _carga():
     dbConnection.close()
 
 def _reset():
-    con = mysql.connector.connect(host=sqlhost,
+    con = mysql.connector.connect(host=Sqlhost,
                               database=Database_name,
                               user=st.secrets["db_username"],
                               password=st.secrets["db_password"])
@@ -49,7 +49,7 @@ def _reset():
 
 # Consulta inicial ao DW2 para carregar o programa:
 
-con = mysql.connector.connect(host=sqlhost,
+con = mysql.connector.connect(host=Sqlhost,
                               database=Database_name,
                               user=st.secrets["db_username"],
                               password=st.secrets["db_password"])
