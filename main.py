@@ -8,10 +8,13 @@ import streamlit as st
 import mysql.connector
 from sqlalchemy import create_engine
 import pymysql
+sqlhost = sql10.freesqldatabase.com
+Database_name = sql10734914
+
 
 def _carga():
-    con = mysql.connector.connect(host='remotemysql.com',
-                              database='7Ap6ze1RVO',
+    con = mysql.connector.connect(host=sqlhost,
+                              database=Database_name,
                               user=st.secrets["db_username"],
                               password=st.secrets["db_password"])
     cursor = con.cursor()
@@ -29,8 +32,8 @@ def _carga():
     dbConnection.close()
 
 def _reset():
-    con = mysql.connector.connect(host='remotemysql.com',
-                              database='7Ap6ze1RVO',
+    con = mysql.connector.connect(host=sqlhost,
+                              database=Database_name,
                               user=st.secrets["db_username"],
                               password=st.secrets["db_password"])
     cursor = con.cursor()
@@ -46,8 +49,8 @@ def _reset():
 
 # Consulta inicial ao DW2 para carregar o programa:
 
-con = mysql.connector.connect(host='remotemysql.com',
-                              database='7Ap6ze1RVO',
+con = mysql.connector.connect(host=sqlhost,
+                              database=Database_name,
                               user=st.secrets["db_username"],
                               password=st.secrets["db_password"])
 cursor = con.cursor()
