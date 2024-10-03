@@ -18,8 +18,8 @@ def _carga():
                               user=st.secrets["db_username"],
                               password=st.secrets["db_password"])
     cursor = con.cursor()
-    df = pd.read_sql("SELECT * FROM dw1\
-                WHERE NOT EXISTS(SELECT * FROM dw2 WHERE dw1.`Código de cliente` = dw2.`Código de cliente`)\
+    df = pd.read_sql("SELECT * FROM DW_completo\
+                WHERE NOT EXISTS(SELECT * FROM DW_producao WHERE DW_completo.`Código de cliente` = DW_producao.`Código de cliente`)\
                 ORDER BY `data última presença`\
                 limit 100", con);
     cursor.close()
@@ -28,7 +28,7 @@ def _carga():
     
     sqlEngine = create_engine(st.secrets["remotemysql_auth"], pool_recycle=3600)
     dbConnection    = sqlEngine.connect()
-    df.to_sql('dw2', dbConnection, index=False,if_exists='append');
+    df.to_sql('DW_producao', dbConnection, index=False,if_exists='append');
     dbConnection.close()
 
 def _reset():
@@ -37,17 +37,17 @@ def _reset():
                               user=st.secrets["db_username"],
                               password=st.secrets["db_password"])
     cursor = con.cursor()
-    df = pd.read_sql("SELECT * FROM dw1 limit 100", con);
+    df = pd.read_sql("SELECT * FROM DW_completo limit 100", con);
     cursor.close()
     con.close()
     df.drop('index', axis=1, inplace = True)
     sqlEngine = create_engine(st.secrets["remotemysql_auth"], pool_recycle=3600)
     dbConnection = sqlEngine.connect()
-    df.to_sql('dw2', dbConnection, index=False, if_exists='replace');
+    df.to_sql('DW_producao', dbConnection, index=False, if_exists='replace');
     dbConnection.close()
 
 
-# Consulta inicial ao DW2 para carregar o programa:
+# Consulta inicial ao DW_producao para carregar o programa:
 
 con = mysql.connector.connect(host=Sqlhost,
                               database=Database_name,
@@ -55,7 +55,7 @@ con = mysql.connector.connect(host=Sqlhost,
                               password=st.secrets["db_password"])
 cursor = con.cursor()
 
-df = pd.read_sql("SELECT * FROM dw2", con);
+df = pd.read_sql("SELECT * FROM DW_producao", con);
 
 cursor.close()
 con.close()
