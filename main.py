@@ -60,7 +60,6 @@ df = pd.read_sql("SELECT * FROM DW_producao", con);
 cursor.close()
 con.close()
 
-datas = []
 datas = pd.to_datetime(df['data última presença'], dayfirst=True)
 periodo = []
 temp = []
