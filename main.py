@@ -69,7 +69,7 @@ for d in datas:
 datas = pd.Series(periodo)
 periodo = datas.unique()
 
-hoje = datetime.now()
+hoje = hoje = pd.to_datetime(date.today(), dayfirst=True)
 Calc_idades = df[['Nascimento']]
 #Acrescento uma coluna no Calc_idades preenchendo com a data de hoje
 for idade in Calc_idades:    
